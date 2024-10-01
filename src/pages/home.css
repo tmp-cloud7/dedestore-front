@@ -1,0 +1,13 @@
+* {
+    margin: 0px;
+    padding: 0px;
+    font-family: sans-serif; 
+    box-sizing: border-box;
+ }
+
+ .default {
+    padding: 30px, 40px;
+    max-width: 100%;
+    margin-inline: auto;
+    display: block;
+ }
