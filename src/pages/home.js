@@ -1,14 +1,17 @@
-import React from "react";
+import React, {useState} from "react";
 import Header from "../components/Header";
 import "./home.css"
 
 const Home = () => {
-    return(
-        <div>
-            <Header />
-            <h2>Home Page</h2>
-            
-        </div>
+    const [count, setCount] = useState(0);
+    return (
+        <>
+            <Header/>
+            <h1>Welcome To DedeStore</h1>
+            <p>You clicked {count} times</p>
+            <button onClick={() => setCount(count + 1)}>Click Me</button>
+            <button onClick={() => setCount(count - 1)}>Click Me -</button>
+        </>
     )
 }
 
