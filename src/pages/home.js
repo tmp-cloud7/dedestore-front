@@ -8,7 +8,7 @@ const Home = () => {
         <>
             <Header/>
             <h1>Welcome To DedeStore</h1>
-            <p>You clicked {count} times</p>
+            <p>You've clicked {count} times</p>
             <button onClick={() => setCount(count + 1)}>Click Me</button>
             <button onClick={() => setCount(count - 1)}>Click Me -</button>
         </>
