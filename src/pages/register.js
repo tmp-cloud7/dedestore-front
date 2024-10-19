@@ -15,8 +15,8 @@ import {
 from 'mdb-react-ui-kit';
 import avatar from "../Assets/avatar.jpg";
 import Header from '../components/Header';
-import validator from "validator";
-import PhoneInput from 'react-phone-input-2';
+// import validator from "validator";
+// import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css'
 
 export default function Register() {
@@ -42,7 +42,7 @@ export default function Register() {
     ///////////////////////////// 16 - 10 - 2024 /////////////////////////////////////////////////////////////////////////////
   
     // Destructure//
-    const [formInput, setForminput] = usestate ({
+    const [formInput, setForminput] = useState ({
         firstname: "",
         lastname: "",
         email: "",
@@ -60,6 +60,46 @@ export default function Register() {
     // Function to handle input
     const handleInputChange = (e) => {
         setForminput({ ...formInput, [e.target.name]: e.target.value});
+    }
+
+    // Function To Handle Registration
+    async function handleFormSubmit () {
+        // Form Validation
+        if (firstname !== "" && lastname !== "" && email !== "" && phone !== "" && password !== "" && confirmPassword !== "" && username !== "" ) {
+            if (password === confirmPassword) {
+                if (password.length >= 8) {
+                    // We use formdata because we are passing in a file.its not necessary for string
+                    // question,,, hows is done with on string without form data 
+                    let formData = new formData ();
+                    formData.append('firstname', firstname);
+                    formData.append('lastname', lastname);
+                    formData.append('email',email);
+                    formData.append('phone',phone);
+                    formData.append('password',password);
+                    formData.append('username', firstname + lastname.charAt(0).toUpperCase() + Math.floor(Math.random() * 1000));
+                    formData.append('user_role', userRole);
+                    formData.append('user_picture', file);
+                
+                    let result = await fetch ("http://localhost:8000/api/register", {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    });
+                    let data = await result.json();
+                    console.log(data)
+                } else {
+                    alert ("Passwords should be at least 8 characters long")
+                }
+            } else {
+                alert ("Passwords do not match")
+            }
+        } else {
+            alert ("Please fill all required fields");
+        }
+
+       
     }
 
     // /////////////////////////////////////////////////// PRACTICE ////////////////////////////////////////////////////////    
@@ -116,17 +156,17 @@ export default function Register() {
 
                             <div className="d-flex flex-row align-items-center mb-4 gap-2">
                                 <MDBIcon fas icon="user me-3" size='lg'/>
-                                <MDBInput label='Firstname' id='form1' type='text' className='w-100' name='firstname' value={firstname} />
-                                <MDBInput label='Lastname' id='form1' type='text' className='w-100'  name='lastname'  value={lastname} />
+                                <MDBInput label='Firstname' id='form1' type='text' className='w-100' name='firstname' value={firstname} onChange={handleInputChange} />
+                                <MDBInput label='Lastname' id='form1' type='text' className='w-100'  name='lastname'  value={lastname} onChange={handleInputChange}/>
                             </div>
 
                             <div className="d-flex flex-row align-items-center mb-4 gap-2 wrap">
                                 <MDBIcon fas icon="envelope me-3" size='lg'/>
-                                <MDBInput label=' Email Address' id='form2' type='email' name='email' value={email}/> <br/>
+                                <MDBInput label=' Email Address' id='form2' type='email' name='email' value={email} onChange={handleInputChange}/> <br/>
                                 {/* <span style={{fontWeight:'bold', color:'red'}}>
                                     {message}
                                 </span> */}
-                                 <MDBInput label=' Phone Number' id='form2' type='tel' name='phone' value={phone}/> <br/>
+                                 <MDBInput label=' Phone Number' id='form2' type='tel' name='phone' value={phone} onChange={handleInputChange}/> <br/>
                                {/* <label>
                                 Phone Number: <PhoneInput country={'us'} value={PhoneNumber} onChange={handleChange} inputProps={{ required: true, }}/>
                                </label>
@@ -135,21 +175,21 @@ export default function Register() {
 
                             <div className="d-flex flex-row align-items-center mb-4">
                                 <MDBIcon fas icon="lock me-3" size='lg'/>
-                                <MDBInput label='Password' id='form3' type='password' name='password' value={password}/>
-                                <MDBInput label='Repeat your password' id='form4' type='password' name='confirmPassword' value={confirmPassword}/>
+                                <MDBInput label='Password' id='form3' type='password' name='password' value={password} onChange={handleInputChange}/>
+                                <MDBInput label='Repeat your password' id='form4' type='password' name='confirmPassword' value={confirmPassword} onChange={handleInputChange}/>
                             </div>
 
                             <div className="d-flex flex-row align-items-center mb-4 gap-3">
                                 <MDBIcon fas icon="user me-3" size='lg'/>
-                                <MDBInput label='Username' id='form1' type='text' className='w-100' name='username' value={username} />
-                                <select class="form-select" aria-label="Default select example"  name='userRole' value={userRole}>
+                                <MDBInput label='Username' id='form1' type='text' className='w-100' name='username' value={username} onChange={handleInputChange}/>
+                                <select class="form-select" aria-label="Default select example"  name='userRole' value={userRole} onChange={handleInputChange}>
                                     <option selected>Select Your Role</option>
                                     <option value="user">User</option>
                                     <option value="vendor">Vender</option>
                                 </select>
                             </div>
 
-                        <MDBBtn className='mb-4' size='lg'>Register</MDBBtn>
+                        <MDBBtn className='mb-4' size='lg' onClick={handleFormSubmit}>Register</MDBBtn>
 
                         </MDBCol>
                             <MDBCol md='10' lg='4' className='order-1 order-lg-2 d-flex flex-column'>
