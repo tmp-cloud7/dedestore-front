@@ -16,3 +16,16 @@ const Home = () => {
 }
 
 export default Home;
+
+
+
+
+
+
+
+
+
+
+
+// <button onClick={() => setCount (count + 1)}>click me +</button>
+// <button onClick={() => setCount (count -  1)}>click me -</button>
