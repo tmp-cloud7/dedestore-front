@@ -14,7 +14,7 @@ import {
 }
 from 'mdb-react-ui-kit';
 import avatar from "../Assets/avatar.jpg";
-import Header from '../components/Header';
+import Header from '../Components/Header';
 
 export default function Register() {
     // Capturing the User DP Upload
@@ -47,6 +47,15 @@ export default function Register() {
     const [cpassword, setCpassword] = useState("");
     const [userRole, setUserRole] = useState("");
 
+    // Capturing Form Data Error
+    const [firstnameErr, setFirstnameErr] = useState("");
+    const [lastnameErr, setLastnameErr] = useState("");
+    const [emailErr, setEmailErr] = useState("");
+    const [phoneErr, setPhoneErr] = useState("");
+    const [passwordErr, setPasswordErr] = useState("");
+    const [cpasswordErr, setCpasswordErr] = useState("");
+    const [userRoleErr, setUserRoleErr] = useState("");
+
     // Capturing Error
     const [err, setErr] = useState("");
     const [res, setRes] = useState("");
@@ -54,56 +63,55 @@ export default function Register() {
 
     async function handleFormSubmit () {
 
-        // Validate all entries
-        if (firstname !== "" && lastname !== "" && email !== "" && phone !== "" && password !== "" && cpassword !== "") {
-             // Validate Phone Number
-            if(phone.match(/^0[789][01]\d{8}$/)) {
-                // Validate Password
-                if(password === cpassword) {
-                    if(password.match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[\w]{8,}$/)) {
-                        let formData = new FormData();
-                        formData.append('firstname', firstname);
-                        formData.append('lastname', lastname);
-                        formData.append('email', email);
-                        formData.append('phone', phone);
-                        formData.append('password', password);
-                        formData.append('user_role', userRole);
-                        formData.append('username', firstname + lastname.charAt(0).toUpperCase() + Math.floor(Math.random() * 1000));
-                        if(userFile) {
-                            formData.append('user_picture', userFile);
-                        }
-            
-                        try {
-                            let result = await fetch("http://localhost:8000/api/register", {
-                                method: 'POST',
-                                body: formData  
-                            });
-            
-                            result = await result.json();
-                            if(result.error) {
-                                setErr("Registration Failed");
-                                setRes("");
-                                console.log(result.error);
-                            } else {
-                                setErr("");
-                                setRes("Registration Successful");
-                                console.log(result);
-                            }
-                        } catch(error) {
-                            console.log(error);
-                            setErr("Registration Failed")
-                        }
-                    } else {
-                        setErr("Password Must contain atleast  1 Uppercase, 1 Lowercase & 1 Number with a minimum of 8 character");
-                    }
-                } else {
-                    setErr("Password don't match");
-                }
+        // Clear previous error messages
+        setFirstnameErr("");
+        setLastnameErr("");
+        setEmailErr("");
+        setPhoneErr("");
+        setPasswordErr("");
+        setCpasswordErr("");
+        setUserRoleErr("");
+
+        let formData = new FormData();
+        formData.append('firstname', firstname);
+        formData.append('lastname', lastname);
+        formData.append('email', email);
+        formData.append('phone', phone);
+        formData.append('password', password);
+        formData.append('cpassword', cpassword);
+        formData.append('user_role', userRole);
+        formData.append('username', firstname + lastname.charAt(0).toUpperCase() + Math.floor(Math.random() * 1000));
+        if(userFile) {
+            formData.append('user_picture', userFile);
+        }
+
+        try {
+            let result = await fetch("http://localhost:8000/api/register", {
+                method: 'POST',
+                body: formData  
+            });
+
+            result = await result.json();
+            if(result.errors) {
+                const errors = result.errors;
+                if(errors.firstname) setFirstnameErr(errors.firstname[0])
+                if(errors.lastname) setLastnameErr(errors.lastname[0])
+                if(errors.email) setEmailErr(errors.email[0])
+                if(errors.phone) setPhoneErr(errors.phone[0])
+                if(errors.user_role) setUserRoleErr(errors.user_role[0])
+                if(errors.password) setPasswordErr(errors.password[0])
+                if(errors.cpassword) setCpasswordErr(errors.cpassword[0])
+                setErr("Registration Failed");
+                setRes("");
+                console.log(result.errors);
             } else {
-                setErr("Invalid Phone Number");
+                setErr("");
+                setRes("Registration Successful");
+                console.log(result);
             }
-        }  else {
-            setErr("All field Required");
+        } catch(errors) {
+            console.log(errors);
+            setErr("Registration Failed")
         }
     }
 
@@ -123,20 +131,39 @@ export default function Register() {
 
                             <div className="d-flex flex-row align-items-center mb-4 gap-2">
                                 <MDBIcon fas icon="user me-3" size='lg'/>
-                                <MDBInput label='Firstname' id='form1' type='text' className='w-100' name='firstname' value={firstname} onChange={(e) => setFirstname(e.target.value)} required/>
-                                <MDBInput label='Lastname' id='form1' type='text' className='w-100' name='lastname' value={lastname} onChange={(e) => setLastname(e.target.value)} required/>
+                                <div className="d-flex flex-column">
+                                    <MDBInput label='Firstname' id='form1' type='text' className='w-100' name='firstname' value={firstname} onChange={(e) => setFirstname(e.target.value)} required/>
+                                    <span className='badge bg-danger mb-2'>{firstnameErr}</span>
+                                </div>
+                                
+                                <div className="d-flex flex-column">
+                                    <MDBInput label='Lastname' id='form1' type='text' className='w-100' name='lastname' value={lastname} onChange={(e) => setLastname(e.target.value)} required/>
+                                    <span className='badge bg-danger mb-2'>{lastnameErr}</span>
+                                </div>
                             </div>
 
                             <div className="d-flex flex-row align-items-center mb-4 gap-2 wrap">
                                 <MDBIcon fas icon="envelope me-3" size='lg'/>
-                                <MDBInput label=' Email Address' id='form2' type='email' name="email" value={email} onChange={(e) => setEmail(e.target.value)} required/>
-                                <MDBInput label=' Phone Number' id='form2' type='tel' name="phone" value={phone} onChange={(e) => setPhone(e.target.value)} required/>
+                                <div className="d-flex flex-column">
+                                    <MDBInput label=' Email Address' id='form2' type='email' name="email" value={email} onChange={(e) => setEmail(e.target.value)} required/>
+                                    <span className='badge bg-danger mb-2'>{emailErr}</span>
+                                </div>
+                                <div className="d-flex flex-column">
+                                    <MDBInput label=' Phone Number' id='form2' type='tel' name="phone" value={phone} onChange={(e) => setPhone(e.target.value)} required/>
+                                    <span className='badge bg-danger mb-2'>{phoneErr}</span>
+                                </div>
                             </div>
 
                             <div className="d-flex flex-row align-items-center mb-4">
                                 <MDBIcon fas icon="lock me-3" size='lg'/>
-                                <MDBInput label='Password' id='form3' type='password' name='password' value={password} onChange={(e) => setPassword(e.target.value)} required/>
-                                <MDBInput label='Repeat your password' id='form4' type='password' name='cpassword' value={cpassword} onChange={(e) => setCpassword(e.target.value)} required/>
+                                <div className="d-flex flex-column">
+                                    <MDBInput label='Password' id='form3' type='password' name='password' value={password} onChange={(e) => setPassword(e.target.value)} required/>
+                                    <span className='badge bg-danger mb-2'>{passwordErr}</span>
+                                </div>
+                                <div className="d-flex flex-column">
+                                    <MDBInput label='Repeat Password' id='form3' type='password' name='password' value={cpassword} onChange={(e) => setCpassword(e.target.value)} required/>
+                                    <span className='badge bg-danger mb-2'>{cpasswordErr}</span>
+                                </div>
                             </div>
 
                             <div className="d-flex flex-row align-items-center mb-4 gap-3">
@@ -147,6 +174,7 @@ export default function Register() {
                                     <option value="user">User</option>
                                     <option value="vendor">Vender</option>
                                 </select>
+                                <span className='badge bg-danger mb-2'>{userRoleErr}</span>
                             </div>
 
                         <MDBBtn className='mb-4' size='lg' onClick={handleFormSubmit}>Register</MDBBtn>
