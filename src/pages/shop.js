@@ -1,6 +1,5 @@
 import React from "react";
-import Header from "../components/Header";
-import "./shop.css"
+import Header from "../Components/Header";
 
 const Shop = () => {
     return (

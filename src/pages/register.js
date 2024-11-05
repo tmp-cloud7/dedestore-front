@@ -105,8 +105,14 @@ export default function Register() {
                 setRes("");
                 console.log(result.errors);
             } else {
-                setErr("");
                 setRes("Registration Successful");
+                setErr("");
+                setFirstname("");
+                setLastname("");
+                setEmail("");
+                setPhone("");
+                setPassword("");
+                setCpassword("");
                 console.log(result);
             }
         } catch(errors) {
@@ -172,7 +178,7 @@ export default function Register() {
                                 <select class="form-select" aria-label="Default select example" name="userRole" value={userRole} onChange={(e) => setUserRole(e.target.value)}>
                                     <option selected>Select Your Role</option>
                                     <option value="user">User</option>
-                                    <option value="vendor">Vender</option>
+                                    <option value="vendor">Vendor</option>
                                 </select>
                                 <span className='badge bg-danger mb-2'>{userRoleErr}</span>
                             </div>

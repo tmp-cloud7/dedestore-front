@@ -7,6 +7,9 @@ import Navbar from 'react-bootstrap/Navbar';
 import { Link } from 'react-router-dom';
 
 export default function Header() {
+  let loginUser  = JSON.parse(localStorage.getItem("userInfo"));
+  
+  console.log(loginUser)
   return (
     <Navbar expand="lg" className="bg-body-tertiary" sticky='top'>
       <Container fluid>
@@ -19,9 +22,28 @@ export default function Header() {
             navbarScroll
           >
             <Nav.Link as={Link} to="/">Home</Nav.Link>
-            <Nav.Link as={Link} to="/register">Register</Nav.Link>
-            {/* <Nav.Link href="#action2">Register</Nav.Link> */}
-            
+            {
+              localStorage.getItem("userInfo") ?
+              (loginUser['user_role'] === "vendor") ?
+              <>
+              <Nav.Link as={Link} to="/Dashboard">Dashboard</Nav.Link>
+              <Nav.Link as={Link} to="/product">Add Product</Nav.Link>
+              <Nav.Link as={Link} to="/Dashboard">View Product</Nav.Link>
+              <Nav.Link as={Link} to="/Logout">Logout</Nav.Link>
+              </>
+              :
+              <>
+              <Nav.Link as={Link} to="/Dashboard">Dashboard</Nav.Link>
+              <Nav.Link as={Link} to="/Logout">Logout</Nav.Link>
+              </>
+              :
+              <>
+              <Nav.Link as={Link} to="/register">Register</Nav.Link>
+              <Nav.Link as={Link} to="/login">Login</Nav.Link>
+              </>
+            }
+                        
+                        
           </Nav>
           <Form className="d-flex">
             <Form.Control
