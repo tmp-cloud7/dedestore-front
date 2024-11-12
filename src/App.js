@@ -2,13 +2,14 @@ import React from 'react'
 import Home from "./Pages/Home";
 import Login from "./Pages/Login";
 import Register from "./Pages/Register";
-import Product from "./Pages/Product";
 import Shop from "./Pages/Shop";
 import { BrowserRouter, Routes, Route} from 'react-router-dom';
 import {Helmet} from "react-helmet";
 import Dashboard from './Pages/Dashboard';
 import Logout from './Pages/Logout';
 import RouteProtection from './Components/RouteProtection';
+import VendorRouteProtection from './Components/VendorRouteProtection';
+import AddProduct from './Pages/AddProduct';
 
 function App() {
   return (
@@ -26,7 +27,7 @@ function App() {
           <Route path = "/logout" element = {<Logout />}/>
           <Route path = "/register" element = {<Register />}/>
           <Route path = "/dashboard" element = {<RouteProtection cmp = {Dashboard} />}/>
-          <Route path = "/product" element = {<Product/>} />
+          <Route path = "/addproduct" element = {<VendorRouteProtection cmp = {AddProduct}/>} />
           <Route path = "/shop" element = {<Shop />} />
         </Routes>
      </BrowserRouter>
