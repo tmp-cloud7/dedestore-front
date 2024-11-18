@@ -1,31 +1,29 @@
-import React, {useState} from "react";
-import Header from '../Components/Header';
+import React, {useEffect, useState} from "react";
+import Header from "../Components/Header";
 
+export default function Home() {
+    const [data, setData] = useState([]);
 
-const Home = () => {
-    const [count, setCount] = useState(0);
+    const fetchData = async () => {
+        try {
+            let response = await fetch("http://localhost:8000/api/productlist");
+            let result = await response.json();
+            setData(result);
+            console.log(data);
+        } catch (error) {
+            console.log("Failed to fetch data", error);
+        }
+    }
+    useEffect(()=>{
+        fetchData();
+    }, []);
+
+    console.log(data)
     return (
         <>
             <Header/>
             <h1>Welcome To DedeStore</h1>
-            <p>You've clicked {count} times</p>
-            <button onClick={() => setCount(count + 1)}>Click Me</button>
-            <button onClick={() => setCount(count - 1)}>Click Me -</button>
+            <p>You clicked times</p>
         </>
     )
 }
-
-export default Home;
-
-
-
-
-
-
-
-
-
-
-
-// <button onClick={() => setCount (count + 1)}>click me +</button>
-// <button onClick={() => setCount (count -  1)}>click me -</button>
